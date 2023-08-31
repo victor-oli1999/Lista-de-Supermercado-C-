@@ -20,7 +20,7 @@ namespace AwesomeDevEvents.API.Controllers
         [HttpGet]
         public IActionResult GetAll() 
         {
-            var devEvents = _context.DevEvents.Where(d => d.IsDeleted).ToList();
+            var devEvents = _context.DevEvents.Where(d => !d.IsDeleted).ToList();
 
             return Ok(devEvents);
         }
