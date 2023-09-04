@@ -1,4 +1,6 @@
-﻿using AwesomeDevEvents.API.Entities;
+﻿using AutoMapper;
+using AwesomeDevEvents.API.Entities;
+using Lista_de_Supermercado.Models;
 using Lista_de_Supermercado.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +13,13 @@ namespace AwesomeDevEvents.API.Controllers
     public class ListaController : ControllerBase
     {
         private readonly ListaDbContext _context;
-
-        public ListaController(ListaDbContext context) 
+        private readonly IMapper _mapper;
+        public ListaController(
+            ListaDbContext context,
+            IMapper mapper) 
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -25,9 +30,11 @@ namespace AwesomeDevEvents.API.Controllers
         public IActionResult GetAll() 
         {
             //var Lista = _context.Listas.Where(d => d.IsAtivo).ToList(); 
-            var Lista = _context.Listas.ToList();
+            var lista = _context.Listas.ToList();
 
-            return Ok(Lista);
+            var listaView = _mapper.Map<List<ListaViewModel>>(lista);
+
+            return Ok(listaView);
         }
 
         /// <summary>
@@ -38,16 +45,18 @@ namespace AwesomeDevEvents.API.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(short id)
         {
-            var Lista = _context.Listas
+            var lista = _context.Listas
                 .Include(de => de.Item)
                 .SingleOrDefault(d => d.Id == id);
 
-            if (Lista == null) 
+            if (lista == null) 
             { 
                 return NotFound();
             }
 
-            return Ok(Lista);
+            var listaView = _mapper.Map<ListaViewModel>(lista);
+
+            return Ok(listaView);
         }
 
         /// <summary>
@@ -56,12 +65,14 @@ namespace AwesomeDevEvents.API.Controllers
         /// <param name="lista"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(Lista lista)
+        public IActionResult Post(ListaInputModel input)
         {
-            _context.Listas.Add(lista);
+            var listaInput = _mapper.Map<Lista>(input);
+
+            _context.Listas.Add(listaInput);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetById), new { id = lista.Id }, lista);
+            return CreatedAtAction(nameof(GetById), new { id = listaInput.Id }, listaInput);
         }
 
         /// <summary>
@@ -71,7 +82,7 @@ namespace AwesomeDevEvents.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Update(short id, Lista input)
+        public IActionResult Update(short id, ListaInputModel input)
         {
             var lista = _context.Listas.SingleOrDefault(d => d.Id == id);
             if (lista == null)
@@ -115,8 +126,10 @@ namespace AwesomeDevEvents.API.Controllers
         /// <param name="item"></param>
         /// <returns></returns>
         [HttpPost("{id}/Itens")]
-        public IActionResult PostItem(short id, ListaItem item)
+        public IActionResult PostItem(short id, ListaItemInputModel input)
         {
+            var item = _mapper.Map<ListaItem>(input);
+
             item.IdLista = id;
 
             var lista = _context.Listas.Any(d => d.Id == id);
