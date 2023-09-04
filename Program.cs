@@ -1,3 +1,4 @@
+using Lista_de_Supermercado.Mappers;
 using Lista_de_Supermercado.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -12,6 +13,7 @@ var listaConnectionString = builder.Configuration.GetConnectionString("ListaCs")
 //builder.Services.AddSingleton<DevEventsDbContext>();
 // builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDb"));
 builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseSqlServer(connectionString));
+builder.Services.AddAutoMapper(typeof(DevEventProfile));
 
 //builder.Services.AddDbContext<ListaDbContext>(o => o.UseInMemoryDatabase("Lista"));
 builder.Services.AddDbContext<ListaDbContext>(o => o.UseSqlServer(listaConnectionString));
