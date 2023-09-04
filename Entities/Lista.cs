@@ -7,7 +7,7 @@
             Item = new List<ListaItem>();
             IsAtivo = false;
         }
-        public Guid Id { get; set; }
+        public short Id { get; set; }
         public string Nome { get; set; }
         public List<ListaItem> Item { get; set; }
         public bool IsAtivo { get; set; }
@@ -17,9 +17,14 @@
             Nome = nome;
         }
 
-        public void Delete()
+        public void Desativo()
         {
-            IsAtivo = true;
+            IsAtivo = false;
+        }
+
+        public void Ativo()
+        {
+            IsAtivo = true; 
         }
     }
 }

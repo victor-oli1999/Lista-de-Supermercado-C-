@@ -7,13 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DevEventsCs");
-
+var listaConnectionString = builder.Configuration.GetConnectionString("ListaCs");
 
 //builder.Services.AddSingleton<DevEventsDbContext>();
 // builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDb"));
 builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseSqlServer(connectionString));
 
-builder.Services.AddDbContext<ListaDbContext>(o => o.UseInMemoryDatabase("Lista"));
+//builder.Services.AddDbContext<ListaDbContext>(o => o.UseInMemoryDatabase("Lista"));
+builder.Services.AddDbContext<ListaDbContext>(o => o.UseSqlServer(listaConnectionString));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
