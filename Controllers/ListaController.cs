@@ -48,7 +48,6 @@ namespace AwesomeDevEvents.API.Controllers
         public IActionResult GetById(short id)
         {
             var lista = _context.Listas
-                .Include(de => de.Item)
                 .SingleOrDefault(d => d.Id == id);
 
             if (lista == null) 
