@@ -6,6 +6,7 @@ namespace Lista_de_Supermercado.Models
     {
         public short Id { get; set; }
         public string Nome { get; set; }
+        public bool IsAtivo { get; set; }
         public List<ListaItemViewModel> Item { get; set; }
     }
 
