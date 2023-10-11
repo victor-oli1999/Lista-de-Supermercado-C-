@@ -13,6 +13,16 @@ namespace Lista_de_Supermercado.Mappers
 
             CreateMap<ListaInputModel, Lista>();
             CreateMap<ListaItemInputModel, ListaItem>();
+
+            CreateMap<ListaItem, ItemTeste>()
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Nome))
+                .ForMember(dst => dst.Hash, opt => opt.MapFrom(src => src.Nome.GetHashCode()));
         }
     }
+}
+
+public class ItemTeste
+{
+    public string Name { get; set; }
+    public int Hash { get; set; }
 }

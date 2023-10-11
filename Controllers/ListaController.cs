@@ -30,7 +30,9 @@ namespace AwesomeDevEvents.API.Controllers
         public IActionResult GetAll() 
         {
             //var Lista = _context.Listas.Where(d => d.IsAtivo).ToList(); 
-            var lista = _context.Listas.ToList();
+            var lista = _context.Listas
+                .Include(de => de.Item)
+                .ToList();
 
             var listaView = _mapper.Map<List<ListaViewModel>>(lista);
 
@@ -46,7 +48,6 @@ namespace AwesomeDevEvents.API.Controllers
         public IActionResult GetById(short id)
         {
             var lista = _context.Listas
-                .Include(de => de.Item)
                 .SingleOrDefault(d => d.Id == id);
 
             if (lista == null) 
@@ -91,7 +92,14 @@ namespace AwesomeDevEvents.API.Controllers
             }
 
             lista.Update(input.Nome);
+            if (lista.IsAtivo == false)
+            {
+                lista.Ativo();
+            } else {
+                lista.Desativo();
+            }
 
+            //lista.Update(input.IsAtivo);
             _context.Listas.Update(lista);
             _context.SaveChanges();
 
