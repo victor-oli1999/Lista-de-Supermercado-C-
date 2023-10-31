@@ -1,7 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using System.Collections.Generic;
+using AutoMapper;
 using AwesomeDevEvents.API.Entities;
 using Lista_de_Supermercado.Models;
 using Lista_de_Supermercado.Persistence;
+using Lista_de_Supermercado.Repositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -172,6 +175,26 @@ namespace AwesomeDevEvents.API.Controllers
             _context.SaveChanges();
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Consulta todas as lista dependendo da condição (Se está ativa ou não)
+        /// </summary>
+        /// <param name="IsAtivo"></param>
+        /// <returns></returns>
+        [HttpGet("IsAtivo")]
+        public IActionResult GetListas(bool IsAtivo)
+        {
+            //var lista = _context.Listas.Where(d => d.IsAtivo == IsAtivo).ToList();
+
+            var Obter = new Obter();
+            var lista = Obter.ObterListas(IsAtivo);
+            var listaView = _mapper.Map<List<ListaViewModel>>(lista);
+            System.Console.WriteLine(lista);
+
+            return Ok(listaView);
+            //var listaRep = new Listagem();
+            //var lista = listaRep.Listagem(IsAtivo);
         }
     }
 }

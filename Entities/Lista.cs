@@ -1,4 +1,6 @@
-﻿namespace AwesomeDevEvents.API.Entities
+﻿using System.Collections.Generic;
+
+namespace AwesomeDevEvents.API.Entities
 {
     public class Lista
     {
@@ -6,6 +8,7 @@
         {
             Item = new List<ListaItem>();
             IsAtivo = false;
+
         }
         public short Id { get; set; }
         public string Nome { get; set; }
