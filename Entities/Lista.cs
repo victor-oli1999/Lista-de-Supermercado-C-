@@ -27,7 +27,7 @@ namespace AwesomeDevEvents.API.Entities
 
         public void Ativo()
         {
-            IsAtivo = true; 
+            IsAtivo = true;
         }
     }
 }

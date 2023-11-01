@@ -1,5 +1,7 @@
 using Lista_de_Supermercado.Mappers;
 using Lista_de_Supermercado.Persistence;
+using Lista_de_Supermercado.Repositorio;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;

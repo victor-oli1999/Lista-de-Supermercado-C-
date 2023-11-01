@@ -17,12 +17,15 @@ namespace AwesomeDevEvents.API.Controllers
     {
         private readonly ListaDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IObterController _ObterController;
         public ListaController(
             ListaDbContext context,
-            IMapper mapper) 
+            IMapper mapper,
+            IObterController ObterController)
         {
             _context = context;
             _mapper = mapper;
+            _ObterController = ObterController;
         }
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace AwesomeDevEvents.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult GetAll() 
+        public IActionResult GetAll()
         {
             //var Lista = _context.Listas.Where(d => d.IsAtivo).ToList(); 
             var lista = _context.Listas
@@ -53,8 +56,8 @@ namespace AwesomeDevEvents.API.Controllers
             var lista = _context.Listas
                 .SingleOrDefault(d => d.Id == id);
 
-            if (lista == null) 
-            { 
+            if (lista == null)
+            {
                 return NotFound();
             }
 
@@ -98,7 +101,9 @@ namespace AwesomeDevEvents.API.Controllers
             if (lista.IsAtivo == false)
             {
                 lista.Ativo();
-            } else {
+            }
+            else
+            {
                 lista.Desativo();
             }
 
@@ -187,8 +192,17 @@ namespace AwesomeDevEvents.API.Controllers
         {
             //var lista = _context.Listas.Where(d => d.IsAtivo == IsAtivo).ToList();
 
-            var Obter = new Obter();
-            var lista = Obter.ObterListas(IsAtivo);
+            //var Obter = new ObterController(_context, _mapper);
+            var listaView = _ObterController.ObterListas(IsAtivo);
+
+            return Ok(listaView);
+            //var listaRep = new Listagem();
+            //var lista = listaRep.Listagem(IsAtivo);
+        }
+        [HttpGet("IsAtivo2")]
+        public IActionResult GetListas2(bool IsAtivo)
+        {
+            var lista = _context.Listas.Where(d => d.IsAtivo == IsAtivo).ToList();
             var listaView = _mapper.Map<List<ListaViewModel>>(lista);
             System.Console.WriteLine(lista);
 
