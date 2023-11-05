@@ -7,12 +7,12 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//var listaConnectionString = builder.Configuration.GetConnectionString("ListaCs");
+var listaConnectionString = builder.Configuration.GetConnectionString("ProdutoCasaCs");
 
 //builder.Services.AddSingleton<DevEventsDbContext>();
 // builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDb"));
 
-builder.Services.AddDbContext<ListaDbContext>(o => o.UseInMemoryDatabase("ProdutoDTO"));
+builder.Services.AddDbContext<ProdutoDbContext>(o => o.UseSqlServer(listaConnectionString));
 //builder.Services.AddDbContext<ListaDbContext>(o => o.UseSqlServer(listaConnectionString));
 
 builder.Services.AddControllers();
