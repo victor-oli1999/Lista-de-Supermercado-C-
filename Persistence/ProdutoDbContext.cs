@@ -17,7 +17,6 @@ namespace Lista_de_Supermercado.Persistence
             builder.Entity<ProdutoDTO>(e =>
             {
                 e.HasKey(de => de.Id);
-                e.Property(de => de.Nome).IsRequired(false);
             });
             builder.Entity<Cupom>(e =>
             {

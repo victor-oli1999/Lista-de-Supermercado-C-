@@ -54,7 +54,10 @@ namespace Lista_de_Supermercado.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Preco")
+                    b.Property<decimal>("Preco_Item")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Preco_Total")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

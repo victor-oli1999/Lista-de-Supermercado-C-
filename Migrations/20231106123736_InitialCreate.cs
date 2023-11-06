@@ -31,7 +31,8 @@ namespace Lista_de_Supermercado.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Preco = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Preco_Item = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Preco_Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IdCupom = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
