@@ -38,8 +38,7 @@ namespace AwesomeDevEvents.API.Controllers
         public IActionResult GetAllProducts()
         {
             //var Lista = _context.Listas.Where(d => d.IsAtivo).ToList(); 
-            var listaProdutos = _context.ProdutoDTO
-                .ToList();
+            var listaProdutos = _context.ProdutoDTO.ToList();
 
             var listaProdutosView = _mapper.Map<List<ProdutoViewModel>>(listaProdutos);
 
@@ -61,7 +60,6 @@ namespace AwesomeDevEvents.API.Controllers
                 return NotFound();
             }
 
-            //var UpdateProduto = new UpdateProduto();
             decimal preco_Total = _updateProduto.CalculoPrecoTotal(Produto.Preco_Item, listaCupons.Desconto);
 
             Produto.UpdateCupom(idCupom, preco_Total);
@@ -80,9 +78,7 @@ namespace AwesomeDevEvents.API.Controllers
         [HttpGet]
         public IActionResult GetAllCupons()
         {
-            //var Lista = _context.Listas.Where(d => d.IsAtivo).ToList(); 
-            var listaCupons = _context.Cupom
-                .ToList();
+            var listaCupons = _context.Cupom.ToList();
 
             var listaCuponsView = _mapper.Map<List<CupomViewModel>>(listaCupons);
 
