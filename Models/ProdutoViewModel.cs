@@ -6,12 +6,12 @@ namespace Lista_de_Supermercado.Models
     {
         public int Id { get; set; }
         public string? Nome { get; set; }
-        public decimal Preco_Total { get; set; }
+        public decimal Preco_Item { get; set; }
     }
     public class CupomViewModel
     {
         public int IdCupom { get; set; }
         public string? Nome { get; set; }
-        public decimal Desconto { get; set; }
+        public decimal Porcentagem_Desconto { get; set; }
     }
 }
