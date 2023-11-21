@@ -60,50 +60,5 @@ namespace AwesomeDevEvents.API.Controllers
 
             return Ok(listaCuponsView);
         }
-
-        /// <summary>
-        /// Consulta todas as Listas de compras
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("{idCarrinho}")]
-        public IActionResult GetListaDeCompras(int idCarrinho)
-        {
-            var listaDeCompras = _context.Carrinho.Where(d => d.IdCarrinho == idCarrinho).ToList();
-
-            var listaDeComprasView = _mapper.Map<List<ListaDeComprasViewModel>>(listaDeCompras);
-
-            return Ok(listaDeComprasView);
-        }
-
-        /// <summary>
-        /// Atualiza produto por id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="idCupom"></param>
-        /// <returns></returns>
-        [Route("Inserir-item-Carrinho")]
-        [HttpPost]
-        public IActionResult insereItemCarrinho(ListaDeComprasInputModel input)
-        {
-            var Produto = _context.Produtos.SingleOrDefault(d => d.Id == input.IdProduto);
-            var listaCupons = _context.Cupons.SingleOrDefault(d => d.IdCupom == input.IdCupom);
-            var usuario = _context.Usuarios.SingleOrDefault(d => d.IdUsuario == input.IdUsuario);
-
-            if (Produto == null || listaCupons == null || usuario == null)
-            {
-                return NotFound();
-            }
-
-            decimal preco_Total = _updateProduto.CalculoPrecoTotal(Produto.Preco_Item, listaCupons.Porcentagem_Desconto);
-
-            var listaDeComprasInput = _mapper.Map<ListaDeCompras>(input);
-
-            listaDeComprasInput.Update_Preco_Total(preco_Total);
-
-            _context.Carrinho.Add(listaDeComprasInput);
-            _context.SaveChanges();
-
-            return Ok(listaDeComprasInput);
-        }
     }
 }

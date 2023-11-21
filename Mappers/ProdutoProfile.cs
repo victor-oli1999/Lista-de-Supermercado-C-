@@ -11,8 +11,8 @@ namespace Lista_de_Supermercado.Mappers
             CreateMap<Produtos, ProdutoViewModel>();
             CreateMap<Cupons, CupomViewModel>();
             CreateMap<Usuarios, UsuariosViewModel>();
-            CreateMap<ListaDeComprasInputModel, ListaDeCompras>();
-            CreateMap<ListaDeCompras, ListaDeComprasViewModel>();
+            CreateMap<ItemListaDeComprasInputModel, ItemListaDeCompras>();
+            CreateMap<ItemListaDeCompras, ItemListaDeComprasViewModel>();
         }
     }
 }
