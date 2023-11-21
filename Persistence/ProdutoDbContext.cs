@@ -11,7 +11,7 @@ namespace Lista_de_Supermercado.Persistence
         }
         public DbSet<Produtos> Produtos { get; set; }
         public DbSet<Cupons> Cupons { get; set; }
-        public DbSet<ListaDeCompras> Carrinho { get; set; }
+        public DbSet<ItemListaDeCompras> Carrinho { get; set; }
         public DbSet<Usuarios> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -24,7 +24,7 @@ namespace Lista_de_Supermercado.Persistence
             {
                 e.HasKey(de => de.IdCupom);
             });
-            builder.Entity<ListaDeCompras>(e =>
+            builder.Entity<ItemListaDeCompras>(e =>
             {
                 e.HasKey(de => de.IdItem);
             });

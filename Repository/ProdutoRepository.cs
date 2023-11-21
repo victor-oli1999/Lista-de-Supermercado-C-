@@ -1,25 +1,37 @@
-﻿using Lista_de_Supermercado.Entities;
+﻿using AutoMapper;
+using Lista_de_Supermercado.Entities;
+using Lista_de_Supermercado.Interface;
+using Lista_de_Supermercado.Models;
+using Lista_de_Supermercado.Persistence;
 using Lista_de_Supermercado.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace Lista_de_Supermercado.Repository
 {
-    //public class ProdutoRepository
+    //public class ProdutoRepository : IProdutoRepository, ControllerBase 
     //{
-    //    private List<ProdutoDTO> ListaProdutos { get; }
-    //    public ProdutoRepository()
+
+    //    private readonly ProdutoDbContext _context;
+    //    private readonly IMapper _mapper;
+    //    public ProdutoRepository
+    //        (
+    //        ProdutoDbContext context,
+    //        IMapper mapper
+    //        )
     //    {
-    //        ListaProdutos = new List<ProdutoDTO>()
-    //        {
-    //            new ProdutoDTO(1, "PlayStation 5", 4185.90m, 3 /* Id do cupom desconto */),
-    //            new ProdutoDTO(2, "Iphone 15", 10174.95m, 1 /* Id do cupom desconto */),
-    //            new ProdutoDTO(3, "Moto Edge 30", 1699.00m, 1 /* Id do cupom desconto */)
-    //        };
-    //    }
-    //    public ProdutoDTO Obter(int id)
-    //    {
-    //        return ListaProdutos.Find(p => p.Id == id);
+    //        _context = context;
+    //        _mapper = mapper;
     //    }
 
+    //    public List<ProdutoViewModel> NomeProduto(int idProduto)
+    //    {
+    //        var listaProdutos = _context.Produtos.Where(d => d.Id == idProduto).ToList();
 
+    //        var listaProdutosView = _mapper.Map<List<ProdutoViewModel>>(listaProdutos);
+
+    //        return listaProdutosView;
+    //    }
     //}
 }
