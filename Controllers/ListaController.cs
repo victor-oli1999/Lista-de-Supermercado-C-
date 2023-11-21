@@ -1,214 +1,109 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using AutoMapper;
-using AwesomeDevEvents.API.Entities;
 using Lista_de_Supermercado.Models;
 using Lista_de_Supermercado.Persistence;
-using Lista_de_Supermercado.Repositorio;
+using Lista_de_Supermercado.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Lista_de_Supermercado.Repository;
+using Lista_de_Supermercado.Interface;
+using System.Linq;
 
 namespace AwesomeDevEvents.API.Controllers
 {
-    [Route("api/Lista")]
+    [Route("api")]
     [ApiController]
     public class ListaController : ControllerBase
     {
-        private readonly ListaDbContext _context;
+        private readonly ProdutoDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IObterController _ObterController;
+        private IUpdateProduto _updateProduto { get; }
         public ListaController(
-            ListaDbContext context,
+            ProdutoDbContext context,
             IMapper mapper,
-            IObterController ObterController)
+            IUpdateProduto updateProduto
+            )
         {
             _context = context;
             _mapper = mapper;
-            _ObterController = ObterController;
+            _updateProduto = updateProduto;
         }
 
         /// <summary>
-        /// Consulta todas as Listas
+        /// Consulta a lista de produtos
         /// </summary>
         /// <returns></returns>
+        [Route("Produtos")]
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAllProducts()
         {
             //var Lista = _context.Listas.Where(d => d.IsAtivo).ToList(); 
-            var lista = _context.Listas
-                .Include(de => de.Item)
-                .ToList();
+            var listaProdutos = _context.Produtos.ToList();
 
-            var listaView = _mapper.Map<List<ListaViewModel>>(lista);
+            var listaProdutosView = _mapper.Map<List<ProdutoViewModel>>(listaProdutos);
 
-            return Ok(listaView);
+            return Ok(listaProdutosView);
+        }
+        /// <summary>
+        /// Consulta todas os cupons
+        /// </summary>
+        /// <returns></returns>
+        [Route("Cupons")]
+        [HttpGet]
+        public IActionResult GetAllCupons()
+        {
+            var listaCupons = _context.Cupons.ToList();
+
+            var listaCuponsView = _mapper.Map<List<CupomViewModel>>(listaCupons);
+
+            return Ok(listaCuponsView);
         }
 
         /// <summary>
-        /// Consulta Lista por Id
+        /// Consulta todas as Listas de compras
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{idCarrinho}")]
+        public IActionResult GetListaDeCompras(int idCarrinho)
+        {
+            var listaDeCompras = _context.Carrinho.Where(d => d.IdCarrinho == idCarrinho).ToList();
+
+            var listaDeComprasView = _mapper.Map<List<ListaDeComprasViewModel>>(listaDeCompras);
+
+            return Ok(listaDeComprasView);
+        }
+
+        /// <summary>
+        /// Atualiza produto por id
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="idCupom"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public IActionResult GetById(short id)
-        {
-            var lista = _context.Listas
-                .SingleOrDefault(d => d.Id == id);
-
-            if (lista == null)
-            {
-                return NotFound();
-            }
-
-            var listaView = _mapper.Map<ListaViewModel>(lista);
-
-            return Ok(listaView);
-        }
-
-        /// <summary>
-        /// Insere lista nova
-        /// </summary>
-        /// <param name="lista"></param>
-        /// <returns></returns>
+        [Route("Inserir-item-Carrinho")]
         [HttpPost]
-        public IActionResult Post(ListaInputModel input)
+        public IActionResult insereItemCarrinho(ListaDeComprasInputModel input)
         {
-            var listaInput = _mapper.Map<Lista>(input);
+            var Produto = _context.Produtos.SingleOrDefault(d => d.Id == input.IdProduto);
+            var listaCupons = _context.Cupons.SingleOrDefault(d => d.IdCupom == input.IdCupom);
+            var usuario = _context.Usuarios.SingleOrDefault(d => d.IdUsuario == input.IdUsuario);
 
-            _context.Listas.Add(listaInput);
-            _context.SaveChanges();
-
-            return CreatedAtAction(nameof(GetById), new { id = listaInput.Id }, listaInput);
-        }
-
-        /// <summary>
-        /// Atualiza lista por id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPut("{id}")]
-        public IActionResult Update(short id, ListaInputModel input)
-        {
-            var lista = _context.Listas.SingleOrDefault(d => d.Id == id);
-            if (lista == null)
+            if (Produto == null || listaCupons == null || usuario == null)
             {
                 return NotFound();
             }
 
-            lista.Update(input.Nome);
-            if (lista.IsAtivo == false)
-            {
-                lista.Ativo();
-            }
-            else
-            {
-                lista.Desativo();
-            }
+            decimal preco_Total = _updateProduto.CalculoPrecoTotal(Produto.Preco_Item, listaCupons.Porcentagem_Desconto);
 
-            //lista.Update(input.IsAtivo);
-            _context.Listas.Update(lista);
+            var listaDeComprasInput = _mapper.Map<ListaDeCompras>(input);
+
+            listaDeComprasInput.Update_Preco_Total(preco_Total);
+
+            _context.Carrinho.Add(listaDeComprasInput);
             _context.SaveChanges();
 
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Desativa lista
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        public IActionResult Desativo(short id)
-        {
-            var lista = _context.Listas.SingleOrDefault(d => d.Id == id);
-            if (lista == null)
-            {
-                return NotFound();
-            }
-
-            lista.Desativo();
-
-            _context.SaveChanges();
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Insere o item de uma lista
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        [HttpPost("{id}/Itens")]
-        public IActionResult PostItem(short id, ListaItemInputModel input)
-        {
-            var item = _mapper.Map<ListaItem>(input);
-
-            item.IdLista = id;
-
-            var lista = _context.Listas.Any(d => d.Id == id);
-
-            if (!lista)
-            {
-                return NotFound();
-            }
-
-            _context.ListaItens.Add(item);
-            _context.SaveChanges();
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Ativa lista
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Route("Ativado")]
-        public IActionResult Ativo(short id)
-        {
-            var lista = _context.Listas.SingleOrDefault(d => d.Id == id);
-            if (lista == null)
-            {
-                return NotFound();
-            }
-
-            lista.Ativo();
-
-            _context.SaveChanges();
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Consulta todas as lista dependendo da condição (Se está ativa ou não)
-        /// </summary>
-        /// <param name="IsAtivo"></param>
-        /// <returns></returns>
-        [HttpGet("IsAtivo")]
-        public IActionResult GetListas(bool IsAtivo)
-        {
-            //var lista = _context.Listas.Where(d => d.IsAtivo == IsAtivo).ToList();
-
-            //var Obter = new ObterController(_context, _mapper);
-            var listaView = _ObterController.ObterListas(IsAtivo);
-
-            return Ok(listaView);
-            //var listaRep = new Listagem();
-            //var lista = listaRep.Listagem(IsAtivo);
-        }
-        [HttpGet("IsAtivo2")]
-        public IActionResult GetListas2(bool IsAtivo)
-        {
-            var lista = _context.Listas.Where(d => d.IsAtivo == IsAtivo).ToList();
-            var listaView = _mapper.Map<List<ListaViewModel>>(lista);
-            System.Console.WriteLine(lista);
-
-            return Ok(listaView);
-            //var listaRep = new Listagem();
-            //var lista = listaRep.Listagem(IsAtivo);
+            return Ok(listaDeComprasInput);
         }
     }
 }

@@ -1,7 +1,7 @@
+using Lista_de_Supermercado.Interface;
 using Lista_de_Supermercado.Mappers;
 using Lista_de_Supermercado.Persistence;
-using Lista_de_Supermercado.Repositorio;
-using Microsoft.AspNetCore.Mvc;
+using Lista_de_Supermercado.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -9,16 +9,15 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DevEventsCs");
-var listaConnectionString = builder.Configuration.GetConnectionString("ListaCs");
+var listaConnectionString = builder.Configuration.GetConnectionString("ProdutoTrabalhoCs");
 
 //builder.Services.AddSingleton<DevEventsDbContext>();
 // builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDb"));
-builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseSqlServer(connectionString));
-builder.Services.AddAutoMapper(typeof(DevEventProfile));
 
-//builder.Services.AddDbContext<ListaDbContext>(o => o.UseInMemoryDatabase("Lista"));
-builder.Services.AddDbContext<ListaDbContext>(o => o.UseSqlServer(listaConnectionString));
+builder.Services.AddDbContext<ProdutoDbContext>(o => o.UseSqlServer(listaConnectionString));
+//builder.Services.AddDbContext<ListaDbContext>(o => o.UseSqlServer(listaConnectionString));
+builder.Services.AddAutoMapper(typeof(ProdutoProfile));
+builder.Services.AddScoped<IUpdateProduto, UpdateProduto>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
