@@ -9,18 +9,28 @@ namespace Lista_de_Supermercado.Persistence
         {
 
         }
-        public DbSet<ProdutoDTO> ProdutoDTO { get; set; }
-        public DbSet<Cupom> Cupom { get; set; }
+        public DbSet<Produtos> Produtos { get; set; }
+        public DbSet<Cupons> Cupons { get; set; }
+        public DbSet<ListaDeCompras> Carrinho { get; set; }
+        public DbSet<Usuarios> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<ProdutoDTO>(e =>
+            builder.Entity<Produtos>(e =>
             {
                 e.HasKey(de => de.Id);
             });
-            builder.Entity<Cupom>(e =>
+            builder.Entity<Cupons>(e =>
             {
                 e.HasKey(de => de.IdCupom);
+            });
+            builder.Entity<ListaDeCompras>(e =>
+            {
+                e.HasKey(de => de.IdItem);
+            });
+            builder.Entity<Usuarios>(e =>
+            {
+                e.HasKey(de => de.IdUsuario);
             });
         }
     }

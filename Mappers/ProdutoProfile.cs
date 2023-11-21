@@ -8,8 +8,11 @@ namespace Lista_de_Supermercado.Mappers
     {
         public ProdutoProfile()
         {
-            CreateMap<ProdutoDTO, ProdutoViewModel>();
-            CreateMap<Cupom, CupomViewModel>();
+            CreateMap<Produtos, ProdutoViewModel>();
+            CreateMap<Cupons, CupomViewModel>();
+            CreateMap<Usuarios, UsuariosViewModel>();
+            CreateMap<ListaDeComprasInputModel, ListaDeCompras>();
+            CreateMap<ListaDeCompras, ListaDeComprasViewModel>();
         }
     }
 }
